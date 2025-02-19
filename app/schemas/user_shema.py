@@ -7,7 +7,6 @@ class UserSchema(Schema):
         error_messages={
             "required": "El nombre es requerido"
         } 
-        
     )
 
     password = fields.Str(
@@ -16,7 +15,6 @@ class UserSchema(Schema):
         error_messages={
             "required": "La contraseña es requerida"
         } 
-        
     )
 
     email = fields.Str(

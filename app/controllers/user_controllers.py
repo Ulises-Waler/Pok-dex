@@ -38,7 +38,7 @@ def update(user_id):
         user = user_model.update(ObjectId(user_id), data)
         return jsonify({
             "data":user
-        }, 200)
+            }, 200)
     except ValidationError as err:
         return jsonify("los parametros enviados son incorrectos",400)
         
