@@ -1,40 +1,31 @@
-from flask import Blueprint, request, jsonify
-from app.models.pokemon_favorities import PokemonFavorites
+from flask import Blueprint, request
+from app.tools.response_manager import ResponseManager
 from bson import ObjectId
 from app.schemas.pokemon_favorites_schema import PokemonFavoritiesSchema
 from marshmallow import ValidationError
+from app.models.factory import ModelFavorite
 
-bp = Blueprint("pokemons", __name__, url_prefix="/pokemons")
-pokemon_model = PokemonFavorites()
-pokemon_favourites_schema = PokemonFavoritiesSchema()
+bp = Blueprint("favourite_pokemons", __name__, url_prefix="/favourite-pokemons")
+RM = ResponseManager()
+FP_MODEL = ModelFavorite.get_model("pokemon_favourites")
+FP_SCHEMA = PokemonFavoritiesSchema
 
-
-@bp.route("/create", methods=["POST"])
-def create_pokemon_favourite():
+@bp.route("/", methods=["POST"])
+def create():
     try:
-        data = pokemon_favourites_schema.load(request.json)
-        pokemon_id = pokemon_model.create(data)
-        return jsonify({"pokemon_id": str(pokemon_id)}), 200
+        data = request.json
+        data = FP_SCHEMA.validate(data)
+        fp = FP_MODEL.create(data)
+        return RM.succes({"_id": fp})
     except ValidationError as err:
-        return jsonify("Los parámetros enviados son incorrectos",400)
+        return RM.error("Es necesario enviar todos los parametros")
 
-@bp.route("/delete/<string:pokemon_id>", methods=["DELETE"])
-def delete_pokemon_favourite(pokemon_id):
-    pokemon_model.delete(ObjectId(pokemon_id))
-    return jsonify("No se encontró el Pokémon", 400)
-
-@bp.route("/update/<string:pokemon_id>", methods=["PUT"])
-def update_pokemon_favourite(pokemon_id):
-    try:
-        data = pokemon_favourites_schema.load(request.json)
-        pokemon = pokemon_model.update(ObjectId(pokemon_id),data)
-        return jsonify({
-            "data": pokemon
-            }, 200)
-    except ValidationError as err:
-        return jsonify("Los parámetros enviados son incorrectos", 400)
+@bp.route("/delete/<string:id>", methods=["DELETE"])
+def delete(id):
+    FP_MODEL.delete(ObjectId(id))
+    return RM.succes("Pokemon eliminado con éxito")
 
 @bp.route("/get_all", methods=["GET"])
-def get_all_pokemons():
-    pokemons = pokemon_model.find_all()
-    return jsonify(pokemons, 200)
+def get_all(user_id):
+    data = FP_MODEL.find_all(user_id)
+    return RM.succes(data)

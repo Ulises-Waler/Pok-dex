@@ -6,16 +6,16 @@ class Pokemon(SuperClase):
         super().__init__("pokemons")
 
     def create(self, data):
-       # raise NotImplementedError("Los pokemones no se pueden crear")  
-       return super().create(data)
+       raise NotImplementedError("Los pokemones no se pueden crear")  
     
     def delete(self, object_id):
-        #raise NotImplementedError("Los pokemones no se pueden eliminar")  
-        return super().delete(object_id)
+        raise NotImplementedError("Los pokemones no se pueden eliminar")  
     
     def update(self, object_id, data):
-        #raise NotImplementedError("Los pokemones no se pueden actualizar")  
-        return super().update(object_id, data)
+        raise NotImplementedError("Los pokemones no se pueden actualizar")  
     
     def find_all(self):
         return super().find_all()
+    
+    def find_one(self, object_id):
+        return super(object_id).find_one()
