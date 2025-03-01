@@ -9,7 +9,7 @@ class UserSchema(Schema):
         } 
     )
 
-    password = fields.Str(
+    email= fields.Email(
         required = True,
         validate=lambda x: "@utma.edu.mx" in x,
         error_messages={
@@ -17,7 +17,7 @@ class UserSchema(Schema):
         } 
     )
 
-    email = fields.Str(
+    password = fields.Str(
         required = True,
         validate=lambda x: len(x) > 0,
         error_messages={
